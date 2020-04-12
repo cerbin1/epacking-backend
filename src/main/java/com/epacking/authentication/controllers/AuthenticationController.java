@@ -1,7 +1,7 @@
 package com.epacking.authentication.controllers;
 
-import com.epacking.authentication.models.Roles;
 import com.epacking.authentication.models.Role;
+import com.epacking.authentication.models.Roles;
 import com.epacking.authentication.models.User;
 import com.epacking.authentication.payload.request.LoginRequest;
 import com.epacking.authentication.payload.request.SignupRequest;
