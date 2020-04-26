@@ -3,6 +3,7 @@ package com.epacking.authentication.controllers;
 import com.epacking.authentication.models.Role;
 import com.epacking.authentication.models.Roles;
 import com.epacking.authentication.models.User;
+import com.epacking.authentication.payload.request.GoogleRequest;
 import com.epacking.authentication.payload.request.LoginRequest;
 import com.epacking.authentication.payload.request.SignupRequest;
 import com.epacking.authentication.payload.response.JwtResponse;
@@ -66,6 +67,31 @@ public class AuthenticationController {
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<?> googleUserAuthentication(@RequestBody GoogleRequest googleRequest) {
+        Set<Role> roles = new HashSet<>();
+            Role userRole = roleRepository.findByName(Roles.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(userRole);
+        googleRequest.setRole(roles);
+        googleRequest.setPassword("qweasd");
+
+        boolean userNotRegistered = !userRepository.existsByEmail(googleRequest.getEmail());
+
+        User user = new User(googleRequest.getUsername(),
+                googleRequest.getEmail(),
+                encoder.encode(googleRequest.getPassword()));
+
+        if(userNotRegistered) {
+            userRepository.save(user);
+        }
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsername(googleRequest.getUsername());
+        loginRequest.setPassword(googleRequest.getPassword());
+        return authenticateUser(loginRequest);
     }
 
     @PostMapping("/signup")
