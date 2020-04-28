@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NoteServiceImpl implements NoteService {
@@ -25,4 +26,17 @@ public class NoteServiceImpl implements NoteService {
     public List<Note> getAllNotes() {
         return noteRepository.findAll();
     }
+
+    @Override
+    public Optional<Note> getNoteById(Long id) {
+        return noteRepository.findById(id);
+    }
+
+    @Override
+    public boolean updateComment(Note note) {
+        Note save = noteRepository.save(note);
+        return save != null;
+    }
+
+
 }

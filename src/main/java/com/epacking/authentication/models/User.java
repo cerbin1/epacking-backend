@@ -1,7 +1,10 @@
 package com.epacking.authentication.models;
 
-import lombok.Data;
+import com.epacking.notes.model.Note;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -10,9 +13,10 @@ import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@Entity
+@Entity(name = "users")
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
@@ -35,6 +39,13 @@ public class User {
     @NotBlank
     @Size(max = 120)
     private String password;
+
+    //    @OneToMany(mappedBy = "userrr")
+//@OneToMany(cascade=CascadeType.ALL)
+//@JoinColumn(name="user_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonManagedReference
+    private Set<Note> userNotes;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
